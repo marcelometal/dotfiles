@@ -25,7 +25,7 @@ Bundle 'ScrollColors'
 Bundle 'snipMate'
 "Bundle 'rodjek/vim-puppet.git'
 "Bundle 'jnwhiteh/vim-golang'
-Bundle 'fatih/vim-go'
+"Bundle 'fatih/vim-go'
 Bundle 'rstacruz/sparkup'
 Bundle 'vim-indent-object'
 Bundle 'darkspectrum'
@@ -64,18 +64,18 @@ autocmd BufWinLeave * call clearmatches()
 
 if has("gui_running")
   if has("gui_gtk2")
-    set guifont=monofur\ for\ Powerline\ 15
+    set guifont=monofur\ for\ Powerline\ 12
   elseif has("gui_photon")
-    set guifont=monofur\ for\ Powerline:s15
+    set guifont=monofur\ for\ Powerline:s12
     set fuopt=maxvert,maxhorz
   elseif has("gui_kde")
-    set guifont=monofur\ for\ Powerline/15/-1/5/50/0/0/0/1/0
+    set guifont=monofur\ for\ Powerline/12/-1/5/50/0/0/0/1/0
     set fuopt=maxvert,maxhorz
   elseif has("x11")
     set guifont=-*-monofur-medium-r-normal-*-*-170-*-*-m-*-*
     set fuopt=maxvert,maxhorz
   else
-    set guifont=monofur\ for\ Powerline:h15
+    set guifont=monofur\ for\ Powerline:h12
     set fuopt=maxvert,maxhorz
   endif
 endif
@@ -178,16 +178,33 @@ let g:airline_powerline_fonts = 1
 let g:go_fmt_command = "gofmt"
 
 "tab mappings
-map <D-1> 1gt
-map <D-2> 2gt
-map <D-3> 3gt
-map <D-4> 4gt
-map <D-5> 5gt
-map <D-6> 6gt
-map <D-7> 7gt
-map <D-8> 8gt
-map <D-9> 9gt
+"map <D-1> 1gt
+"map <D-2> 2gt
+"map <D-3> 3gt
+"map <D-4> 4gt
+"map <D-5> 5gt
+"map <D-6> 6gt
+"map <D-7> 7gt
+"map <D-8> 8gt
+"map <D-9> 9gt
 
+:nnoremap <C-S-t> :tabnew<CR>
+:inoremap <C-S-t> <Esc>:tabnew<CR>
+:inoremap <C-S-w> <Esc>:tabclose<CR>
+
+nnoremap <M-1> 1gt
+nnoremap <M-2> 2gt
+nnoremap <M-3> 3gt
+nnoremap <M-4> 4gt
+nnoremap <M-5> 5gt
+nnoremap <M-6> 6gt
+nnoremap <M-7> 7gt
+nnoremap <M-8> 8gt
+nnoremap <M-9> 9gt
+nnoremap <M-0> 10gt
+
+nnoremap <S-h> gT
+nnoremap <S-l> gt
 
 nmap <silent> <Leader>y :CtrlPMRU<CR>
 nmap <silent> <Leader>t :CtrlPMixed<CR>
@@ -205,3 +222,15 @@ let g:ctrlp_custom_ignore = {
     \ 'file': '\.DS_Store$\|\.so$\|\.jpg|\.gif|\.png|\.psd$',
     \ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
     \ }
+
+"set guioptions-=e
+
+set guioptions-=m  "remove menu bar
+set guioptions-=T  "remove toolbar
+
+set guitablabel=%M%f
+
+vmap <C-c> "+yi
+vmap <C-x> "+c
+vmap <C-v> c<ESC>"+p
+imap <C-v> <C-r><C-o>+
