@@ -1,57 +1,35 @@
 set nocompatible              " be iMproved
 filetype off                  " required!
 
-"autocmd! bufwritepost .vimrc source %
 
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
-" let Vundle manage Vundle
-" required!
-Bundle 'gmarik/vundle'
+" " let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'aldmeris'
+Plugin 'Syntastic'
+Plugin 'vim-airline/vim-airline'
+Plugin 'ap/vim-css-color'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'fugitive.vim'
+Plugin 'mxw/vim-jsx'
+Plugin 'pangloss/vim-javascript'
 
-" My Bundles
-Bundle 'kien/ctrlp.vim'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic'
-Bundle 'pangloss/vim-javascript'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'hail2u/vim-css3-syntax'
-Bundle 'ap/vim-css-color'
-Bundle 'tpope/vim-markdown'
-Bundle 'Colour-Sampler-Pack'
-Bundle 'ScrollColors'
-Bundle 'snipMate'
-"Bundle 'rodjek/vim-puppet.git'
-"Bundle 'jnwhiteh/vim-golang'
-"Bundle 'fatih/vim-go'
-Bundle 'rstacruz/sparkup'
-Bundle 'vim-indent-object'
-Bundle 'darkspectrum'
-Bundle 'aldmeris'
-Bundle 'pyflakes.vim'
-Bundle 'vim-flake8'
-Bundle 'DetectIndent'
-"Bundle 'Git-Branch-Info'
-Bundle 'pep8'
-Bundle 'Lokaltog/vim-easymotion'
-Bundle 'bling/vim-airline'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-surround'
-
-filetype plugin indent on     " required!
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
 
 
-"colorscheme darkspectrum
-"colorscheme jellybeans
 colorscheme aldmeris
-
-execute pathogen#infect()
-
-syntax on
 set bg=dark
 
+syntax on
+
+
+" ExtraWhitespace
 
 highlight ExtraWhitespace ctermbg=darkred guibg=darkred
 match ExtraWhitespace /\s\+$/
@@ -60,25 +38,73 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
 
-"set guifont=monofur:h15
+
+" JSX
+let g:jsx_ext_required = 0
+
+
+" CSS Color
+
+let g:cssColorVimDoNotMessMyUpdatetime = 1
+
+
+" Ctrl+p
+
+nmap <silent> <Leader>y :CtrlPMRU<CR>
+nmap <silent> <Leader>t :CtrlPMixed<CR>
+nmap <silent> <Leader>r :CtrlPClearCache<CR>
+let g:ctrlp_open_new_file = 't'
+let g:ctrlp_lazy_update = 100
+let g:ctrlp_max_height = 30
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_default_input = 1
+let g:ctrlp_clear_cache_on_exit = 0
+let g:ctrlp_mruf_relative = 1
+
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/](\.git|\.hg|\.svn|.egg-info|exty\/firefox\/.*|exty\/chrome\/.*|node_modules)$',
+    \ 'file': '\.DS_Store$\|\.so$\|\.jpg|\.gif|\.png|\.psd$',
+    \ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
+    \ }
+
+
+" Syntastic
+
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_python_checkers = ['pyflakes']
+let g:syntastic_python_flake8_exec = "python3"
+let g:syntastic_python_flake8_exec = 'flake8-py3'
+
+
+" Airline
+
+let g:airline_powerline_fonts = 1
+
+
+" GUI
 
 if has("gui_running")
   if has("gui_gtk2")
-    set guifont=monofur\ for\ Powerline\ 12
+    set guifont=monofur\ for\ Powerline\ 14
+  elseif has("gui_gtk3")
+    set guifont=monofur\ for\ Powerline\ 14
   elseif has("gui_photon")
-    set guifont=monofur\ for\ Powerline:s12
+    set guifont=monofur\ for\ Powerline:s14
     set fuopt=maxvert,maxhorz
   elseif has("gui_kde")
-    set guifont=monofur\ for\ Powerline/12/-1/5/50/0/0/0/1/0
+    set guifont=monofur\ for\ Powerline/14/-1/5/50/0/0/0/1/0
     set fuopt=maxvert,maxhorz
   elseif has("x11")
     set guifont=-*-monofur-medium-r-normal-*-*-170-*-*-m-*-*
     set fuopt=maxvert,maxhorz
   else
-    set guifont=monofur\ for\ Powerline:h12
+    set guifont=monofur\ for\ Powerline:h15
+    " set guifont=Inconsolata\ for\ Powerline:h15
     set fuopt=maxvert,maxhorz
   endif
 endif
+
 
 set modelines=0
 
@@ -148,14 +174,6 @@ else
 endif
 
 
-source ~/.vim/includes/ctrlp
-
-" DetectIdent
-:autocmd BufReadPost * DetectIndent
-:let g:detectindent_preferred_expandtab = 1
-:let g:detectindent_preferred_indent = 2
-
-
 map <Leader>b :call InsertLine()<CR>
 
 function! InsertLine()
@@ -163,30 +181,16 @@ function! InsertLine()
   execute "normal o".trace
 endfunction
 
-"autocmd FileType go autocmd BufWritePre <buffer> Fmt
 
-let g:pyflakes_use_quickfix = 0
+map <Leader>m :call InsertNoseFocus()<CR>
 
-map <Leader> <Plug>(easymotion-prefix)
+function! InsertNoseFocus()
+  let trace = expand("\n\n# FIXME\nfrom nose_focus import focus\n@focus")
+  execute "normal o".trace
+endfunction
 
-let g:airline_powerline_fonts = 1
 
-"set statusline=%{GitBranchInfoString()}%F%m%r%h%w%=(%{&ff}/%Y)\ (line\ %l\/%L,\ col\ %c)
-"let g:airline_section_b = '%{GitBranchInfoString()}'
-"
-
-let g:go_fmt_command = "gofmt"
-
-"tab mappings
-"map <D-1> 1gt
-"map <D-2> 2gt
-"map <D-3> 3gt
-"map <D-4> 4gt
-"map <D-5> 5gt
-"map <D-6> 6gt
-"map <D-7> 7gt
-"map <D-8> 8gt
-"map <D-9> 9gt
+" Tabs
 
 :nnoremap <C-S-t> :tabnew<CR>
 :inoremap <C-S-t> <Esc>:tabnew<CR>
@@ -206,24 +210,17 @@ nnoremap <M-0> 10gt
 nnoremap <S-h> gT
 nnoremap <S-l> gt
 
-nmap <silent> <Leader>y :CtrlPMRU<CR>
-nmap <silent> <Leader>t :CtrlPMixed<CR>
-nmap <silent> <Leader>r :CtrlPClearCache<CR>
-let g:ctrlp_open_new_file = 't'
-let g:ctrlp_lazy_update = 100
-let g:ctrlp_max_height = 30
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_default_input = 1
-let g:ctrlp_clear_cache_on_exit = 0
-let g:ctrlp_mruf_relative = 1
+map <D-1> 1gt
+map <D-2> 2gt
+map <D-3> 3gt
+map <D-4> 4gt
+map <D-5> 5gt
+map <D-6> 6gt
+map <D-7> 7gt
+map <D-8> 8gt
+map <D-9> 9gt
+map <D-0> 10gt
 
-let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/](\.git|\.hg|\.svn|.egg-info|exty\/firefox\/.*|exty\/chrome\/.*|node_modules)$',
-    \ 'file': '\.DS_Store$\|\.so$\|\.jpg|\.gif|\.png|\.psd$',
-    \ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
-    \ }
-
-"set guioptions-=e
 
 set guioptions-=m  "remove menu bar
 set guioptions-=T  "remove toolbar
