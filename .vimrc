@@ -1,4 +1,3 @@
-set nocompatible              " be iMproved
 filetype off                  " required!
 
 
@@ -17,6 +16,12 @@ Plugin 'scrooloose/nerdcommenter'
 Plugin 'fugitive.vim'
 Plugin 'mxw/vim-jsx'
 Plugin 'pangloss/vim-javascript'
+Plugin 'editorconfig/editorconfig-vim'
+Plugin 'prettier/vim-prettier'
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'chrisbra/csv.vim'
+" Plugin 'ambv/black'
+Plugin 'fatih/vim-go'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -38,6 +43,13 @@ autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 autocmd BufWinLeave * call clearmatches()
 
+autocmd Filetype javascript setlocal ts=2 sw=2 sts=0 expandtab
+autocmd Filetype python setlocal ts=4 sw=4 sts=0 expandtab
+autocmd Filetype json setlocal ts=2 sw=2 sts=0 expandtab
+autocmd Filetype yaml setlocal ts=2 sw=2 sts=0 expandtab
+
+" GO
+let g:go_def_mapping_enabled=0
 
 " JSX
 let g:jsx_ext_required = 0
@@ -49,6 +61,16 @@ let g:cssColorVimDoNotMessMyUpdatetime = 1
 
 
 " Ctrl+p
+
+"" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
+
 
 nmap <silent> <Leader>y :CtrlPMRU<CR>
 nmap <silent> <Leader>t :CtrlPMixed<CR>
@@ -62,7 +84,7 @@ let g:ctrlp_clear_cache_on_exit = 0
 let g:ctrlp_mruf_relative = 1
 
 let g:ctrlp_custom_ignore = {
-    \ 'dir':  '\v[\/](\.git|\.hg|\.svn|.egg-info|exty\/firefox\/.*|exty\/chrome\/.*|node_modules)$',
+    \ 'dir':  '\v[\/](\.git|\.hg|\.svn|.egg-info|exty\/firefox\/.*|exty\/chrome\/.*|node_modules|vendor)$',
     \ 'file': '\.DS_Store$\|\.so$\|\.jpg|\.gif|\.png|\.psd$',
     \ 'link': 'SOME_BAD_SYMBOLIC_LINKS',
     \ }
@@ -80,6 +102,7 @@ let g:syntastic_python_flake8_exec = 'flake8-py3'
 " Airline
 
 let g:airline_powerline_fonts = 1
+let g:airline_section_c = '%<%F%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
 
 
 " GUI
@@ -88,7 +111,7 @@ if has("gui_running")
   if has("gui_gtk2")
     set guifont=monofur\ for\ Powerline\ 14
   elseif has("gui_gtk3")
-    set guifont=monofur\ for\ Powerline\ 14
+    set guifont=monofur\ for\ Powerline\ 16
   elseif has("gui_photon")
     set guifont=monofur\ for\ Powerline:s14
     set fuopt=maxvert,maxhorz
@@ -173,24 +196,17 @@ else
   au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
 endif
 
-
 map <Leader>b :call InsertLine()<CR>
-
 function! InsertLine()
   let trace = expand("import pdb; pdb.set_trace()")
   execute "normal o".trace
 endfunction
 
-
-map <Leader>m :call InsertNoseFocus()<CR>
-
-function! InsertNoseFocus()
-  let trace = expand("\n\n# FIXME\nfrom nose_focus import focus\n@focus")
+map <Leader>m :call InsertLineFocus()<CR>
+function! InsertLineFocus()
+  let trace = expand("\n# FIXME\nfrom nose_focus import focus\n@focus")
   execute "normal o".trace
 endfunction
-
-
-" Tabs
 
 :nnoremap <C-S-t> :tabnew<CR>
 :inoremap <C-S-t> <Esc>:tabnew<CR>
@@ -210,18 +226,6 @@ nnoremap <M-0> 10gt
 nnoremap <S-h> gT
 nnoremap <S-l> gt
 
-map <D-1> 1gt
-map <D-2> 2gt
-map <D-3> 3gt
-map <D-4> 4gt
-map <D-5> 5gt
-map <D-6> 6gt
-map <D-7> 7gt
-map <D-8> 8gt
-map <D-9> 9gt
-map <D-0> 10gt
-
-
 set guioptions-=m  "remove menu bar
 set guioptions-=T  "remove toolbar
 
@@ -231,3 +235,6 @@ vmap <C-c> "+yi
 vmap <C-x> "+c
 vmap <C-v> c<ESC>"+p
 imap <C-v> <C-r><C-o>+
+
+" Webpack hot realod: https://github.com/webpack/webpack/issues/781
+set backupcopy=yes
