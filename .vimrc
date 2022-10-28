@@ -9,7 +9,8 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'aldmeris'
-Plugin 'Syntastic'
+Plugin 'vim-syntastic/syntastic'
+Plugin 'nvie/vim-flake8'
 Plugin 'vim-airline/vim-airline'
 Plugin 'ap/vim-css-color'
 Plugin 'scrooloose/nerdcommenter'
@@ -20,8 +21,8 @@ Plugin 'editorconfig/editorconfig-vim'
 Plugin 'prettier/vim-prettier'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'chrisbra/csv.vim'
-" Plugin 'ambv/black'
 Plugin 'fatih/vim-go'
+Plugin 'psf/black'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -31,10 +32,8 @@ filetype plugin indent on    " required
 colorscheme aldmeris
 set bg=dark
 
+let python_highlight_all=1
 syntax on
-
-
-" ExtraWhitespace
 
 highlight ExtraWhitespace ctermbg=darkred guibg=darkred
 match ExtraWhitespace /\s\+$/
@@ -47,9 +46,35 @@ autocmd Filetype javascript setlocal ts=2 sw=2 sts=0 expandtab
 autocmd Filetype python setlocal ts=4 sw=4 sts=0 expandtab
 autocmd Filetype json setlocal ts=2 sw=2 sts=0 expandtab
 autocmd Filetype yaml setlocal ts=2 sw=2 sts=0 expandtab
+autocmd Filetype html setlocal ts=2 sw=2 sts=0 expandtab
+autocmd Filetype css setlocal ts=2 sw=2 sts=0 expandtab
+autocmd Filetype scss setlocal ts=2 sw=2 sts=0 expandtab
+
+set foldmethod=indent
+set foldnestmax=10
+set nofoldenable
+set foldlevel=2
 
 " GO
-let g:go_def_mapping_enabled=0
+" let g:go_def_mapping_enabled=0
+"let g:go_fmt_command = "goimports"
+
+let g:go_autodetect_gopath = 1
+let g:go_def_mapping_enabled = 0
+let g:go_fmt_command = "goimports"
+let g:go_gocode_propose_source = 0
+let g:go_list_type = "quickfix"
+
+let g:go_highlight_extra_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_generate_tags = 1
+let g:go_highlight_types = 1
+
+let g:syntastic_go_checkers = ['golint', 'govet', 'golangci-lint']
+let g:syntastic_go_gometalinter_args = ['--disable-all', '--enable=errcheck']
+let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 
 " JSX
 let g:jsx_ext_required = 0
@@ -103,6 +128,11 @@ let g:syntastic_python_flake8_exec = 'flake8-py3'
 
 let g:airline_powerline_fonts = 1
 let g:airline_section_c = '%<%F%m %#__accent_red#%{airline#util#wrap(airline#parts#readonly(),0)}%#__restore__#'
+
+
+" Black
+
+let g:black_linelength = 80
 
 
 " GUI
@@ -187,6 +217,11 @@ nnoremap <leader><space> :noh<cr>
 nnoremap <tab> %
 vnoremap <tab> %
 
+" Return to last edit position when opening files
+autocmd BufReadPost *
+     \ if line("'\"") > 0 && line("'\"") <= line("$") |
+     \   exe "normal! g`\"" |
+     \ endif
 
 if exists('+colorcolumn')
   set colorcolumn=80
@@ -235,6 +270,3 @@ vmap <C-c> "+yi
 vmap <C-x> "+c
 vmap <C-v> c<ESC>"+p
 imap <C-v> <C-r><C-o>+
-
-" Webpack hot realod: https://github.com/webpack/webpack/issues/781
-set backupcopy=yes
